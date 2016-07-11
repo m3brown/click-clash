@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Click Clash - Play{% endblock %}
+{% block header_text %}Click Clash - Play{% endblock %}
+
+{% block extra_menu %}
+    <li class="pure-menu-item pure-menu-selected"><a href="/" class="pure-menu-link">Scoreboard</a></li>
+{% endblock %}
+
+{% block content %}
+
+    <div class="splash-container">
+        <div class="splash">
+            <h1 id="update" class="splash-head pure-button pure-button-primary">mystery button <i class="fa fa-hand-pointer-o"></i></h1>
+            <p class="splash-subhead">
+                Your current click count:
+                <div class="splash-subhead">Clientside: <span id="cl-counter">{{ counter }}</span></div>
+                <div class="splash-subhead">Websockets: <span id="ws-counter">{{ counter }}</span></div>
+            </p>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="content">
+            <h2 class="content-head is-center">Active Leaders</h2>
+            <div class="pure-g">
+                <div class="pure-u-1">
+                    <ul id="ranking">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer l-box is-center">
+        <i class="fa fa-github" aria-hidden="true"></i>
+    </div>
+
+{% endblock %}
+
+{% block extra_body %}
+
+    <script src="{% static "js/tinysort.min.js" %}" type="text/javascript"></script>
+    <script type="text/javascript">
+
+    $( document ).ready(function() {
+
+        tinysort.defaults.order = 'desc';
+
+        $(function () {
+            // Correctly decide between ws:// and wss://
+            var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+            var ws_path = ws_scheme + '://' + window.location.host + "/game/stream/scoreboard";
+            console.log("Connecting to " + ws_path);
+            var socket = new ReconnectingWebSocket(ws_path);
+
+            // Handle incoming messages
+            socket.onmessage = function (message) {
+                // Decode the JSON
+                console.log("Got websocket message " + message.data);
+                var data = JSON.parse(message.data);
+                if (data.action == 'update_self') {
+                    $('#ws-counter').html(data.count);
+                } else if (data.action == 'update') {
+                    if ($('ul#ranking li#'+data.user).length > 0) {
+                        $('ul#ranking li#'+data.user).html("<span>"+data.user+"</span> <span>"+data.count+"</span>");
+                    } else {
+                        $('ul#ranking').append('<li id="'+data.user+'"><span>'+data.user+"</span> <span>"+data.count+'</span></li>');
+                    };
+                    tinysort('ul#ranking>li','span:nth-child(2)');
+                } else if (data.action == 'discard') {
+                    $('ul#ranking li#'+data.user).remove();
+                }
+            };
+
+            $("#update").click(function() {
+                socket.send(JSON.stringify({
+                            "increment": true,
+                }));
+                $('#cl-counter').html(function(i, val) {
+                    return parseInt(val)+1;
+                });
+            })
+        })
+
+    })
+    </script>
+
+{% endblock %}

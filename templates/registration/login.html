@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+{% block header_text %}Login{% endblock %}
+
+{% block extra_menu %}
+    <li class="pure-menu-item pure-menu-selected"><a href="/" class="pure-menu-link">Scoreboard</a></li>
+{% endblock %}
+
+{% block content %}
+
+    <form class="pure-form pure-form-stacked" action="." method="POST">
+        {{ form }}
+        {% csrf_token %}
+        <button>Login</button>
+    </form>
+
+    <p>
+    <a href="/accounts/register/">Register here</a> if you don't already have an account.
+{% endblock %}

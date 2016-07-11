@@ -1,0 +1,21 @@
+version: "2"
+
+services:
+  redis:
+    image: redis:latest
+  web:
+    build: .
+    command: daphne -b 0.0.0.0 -p 8000 clickclash.asgi:channel_layer
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    links:
+      - redis
+  worker:
+    build: .
+    command: python manage.py runworker
+    volumes:
+      - .:/code
+    links:
+      - redis
