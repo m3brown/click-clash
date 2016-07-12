@@ -44,7 +44,7 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'clickclash.urls'
 
-redis_host = os.environ.get('REDIS_HOST', 'localhost')
+redis_host = os.environ.get('REDIS_URL', 'localhost:6379')
 
 # Channel layer definitions
 # http://channels.readthedocs.org/en/latest/deploying.html#setting-up-a-channel-backend
@@ -53,7 +53,7 @@ CHANNEL_LAYERS = {
         # This example app uses the Redis channel layer implementation asgi_redis
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(redis_host, 6379)],
+            "hosts": [redis_host],
         },
         "ROUTING": "clickclash.routing.channel_routing",
     },
@@ -110,7 +110,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
-
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
