@@ -1,3 +1,5 @@
 Django>=1.9
 channels>=0.10
 asgi_redis>=0.9
+dj-database-url>=0.4
+psycopg2>=2.6

@@ -17,7 +17,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret! And don't use debug=True in production!
 SECRET_KEY = 'imasecret'
-DEBUG = True
+
+if os.environ.get('DEBUG') == 'False':
+    DEBUG = False
+else:
+    DEBUG = True
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -83,12 +87,19 @@ WSGI_APPLICATION = 'clickclash.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+DB_URL = os.environ.get("DATABASE_URL", None)
+
+# If on heroku
+if DB_URL:
+    import dj_database_url
+    DATABASES = {'default': dj_database_url.config()}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
 
 
 # Password validation
