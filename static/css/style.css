@@ -286,7 +286,7 @@ a.pure-button-primary {
 /* Custom for ClickClash */
 span.helptext { display: none }
 
-ul#ranking {
+ul#ranking, ul#all-time-ranking {
     text-align: center;
     list-style-type: none;
     padding: 0;

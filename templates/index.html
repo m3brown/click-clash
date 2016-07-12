@@ -1,28 +1,17 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
-{% block title %}Click Clash - Play{% endblock %}
-{% block header_text %}Click Clash - Play{% endblock %}
+{% block title %}Click Clash - Watch{% endblock %}
+{% block header_text %}Click Clash - Watch{% endblock %}
 
 {% block extra_menu %}
-    <li class="pure-menu-item pure-menu-selected"><a href="/" class="pure-menu-link">Scoreboard</a></li>
+    <li class="pure-menu-item pure-menu-selected"><a href="/play" class="pure-menu-link">Participate</a></li>
 {% endblock %}
 
 {% block content %}
 
-    <div class="splash-container">
-        <div class="splash">
-            <h1 id="update" class="splash-head pure-button pure-button-primary">mystery button <i class="fa fa-hand-pointer-o"></i></h1>
-            <p class="splash-subhead">
-                Your current click count:
-                <div class="splash-subhead">Clientside: <span id="cl-counter">{{ counter }}</span></div>
-                <div class="splash-subhead">Websockets: <span id="ws-counter">{{ counter }}</span></div>
-            </p>
-        </div>
-    </div>
-
-    <div class="content-wrapper">
-        <div class="content">
+    <div id="layout" class="pure-g">
+        <div class="content pure-u-1 pure-u-md-1">
             <h2 class="content-head is-center">Active Leaders</h2>
             <div class="pure-g">
                 <div class="pure-u-1">
@@ -30,11 +19,15 @@
                     </ul>
                 </div>
             </div>
+            <p>
+            <h2 class="content-head is-center">All-Time Leaders</h2>
+            <div class="pure-g">
+                <div class="pure-u-1">
+                    <ul id="all-time-ranking">
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div class="footer l-box is-center">
-        <i class="fa fa-github" aria-hidden="true"></i>
     </div>
 
 {% endblock %}
@@ -51,7 +44,7 @@
         $(function () {
             // Correctly decide between ws:// and wss://
             var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-            var ws_path = ws_scheme + '://' + window.location.host + "/game/stream/scoreboard";
+            var ws_path = ws_scheme + '://' + window.location.host + "/stream/scoreboard";
             console.log("Connecting to " + ws_path);
             var socket = new ReconnectingWebSocket(ws_path);
 
@@ -60,30 +53,28 @@
                 // Decode the JSON
                 console.log("Got websocket message " + message.data);
                 var data = JSON.parse(message.data);
-                if (data.action == 'update_self') {
-                    $('#ws-counter').html(data.count);
-                } else if (data.action == 'update') {
+                if (data.action == 'update') {
                     if ($('ul#ranking li#'+data.user).length > 0) {
                         $('ul#ranking li#'+data.user).html("<span>"+data.user+"</span> <span>"+data.count+"</span>");
                     } else {
                         $('ul#ranking').append('<li id="'+data.user+'"><span>'+data.user+"</span> <span>"+data.count+'</span></li>');
                     };
+                    if ($('ul#all-time-ranking li#top-'+data.user).length > 0) {
+                        $('ul#all-time-ranking li#top-'+data.user).html("<span>"+data.user+"</span> <span>"+data.count+"</span>");
+                    };
+                    // TODO need to add element to all-time list if new to the top 10, truncate 11
                     tinysort('ul#ranking>li','span:nth-child(2)');
+                    tinysort('ul#top-ranking>li','span:nth-child(2)');
                 } else if (data.action == 'discard') {
                     $('ul#ranking li#'+data.user).remove();
+                } else if (data.action == 'alltime') {
+                    $("ul#all-time-ranking").empty();
+                    $.each(data.toplist, function(index, topitem) {
+                        $('ul#all-time-ranking').append('<li id="top-'+topitem.user+'"><span>'+topitem.user+"</span> <span>"+topitem.count+'</span></li>');
+                    });
                 }
             };
-
-            $("#update").click(function() {
-                socket.send(JSON.stringify({
-                            "increment": true,
-                }));
-                $('#cl-counter').html(function(i, val) {
-                    return parseInt(val)+1;
-                });
-            })
         })
-
     })
     </script>
 

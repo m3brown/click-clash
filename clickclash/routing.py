@@ -6,7 +6,7 @@ from channels import include
 # on a path prefix, and then include routing from the game module.
 channel_routing = [
     # Include sub-routing from an app.
-    include("game.routing.websocket_routing", path=r"^/game/stream"),
+    include("game.routing.websocket_routing", path=r"^/stream"),
 
     # A default "http.request" route is always inserted by Django at the end of the routing list
     # that routes all unmatched HTTP requests to the Django view system. If you want lower-level
