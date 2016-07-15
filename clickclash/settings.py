@@ -90,7 +90,7 @@ DB_URL = os.environ.get("DATABASE_URL", None)
 # If on heroku
 if DB_URL:
     import dj_database_url
-    DATABASES = {'default': dj_database_url.config()}
+    DATABASES = {'default': dj_database_url.config(conn_max_age=600)}
 else:
     DATABASES = {
         'default': {
