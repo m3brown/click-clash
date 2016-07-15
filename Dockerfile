@@ -1,6 +1,5 @@
 FROM python:3.4
 ENV PYTHONUNBUFFERED 1
-ENV REDIS_URL "redis:6379"
 RUN mkdir /code
 WORKDIR /code
 ADD . /code/

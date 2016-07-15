@@ -12,6 +12,8 @@ services:
       - "8000:8000"
     links:
       - redis
+    environment:
+      - REDIS_URL=redis://redis:6379
   worker:
     build: .
     command: python manage.py runworker
@@ -19,3 +21,5 @@ services:
       - .:/code
     links:
       - redis
+    environment:
+      - REDIS_URL=redis://redis:6379
