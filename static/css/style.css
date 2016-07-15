@@ -292,4 +292,9 @@ ul#ranking, ul#all-time-ranking {
     padding: 0;
 }
 .pure-menu-selected .pure-menu-link:visited { color: white; }
-.splash { top: 25px; }
+.splash {
+    top: 25px;
+    /* turn off zooming when clicking fast on mobile */
+    touch-action: manipulation;
+}
+
