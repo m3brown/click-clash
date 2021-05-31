@@ -1,7 +1,7 @@
 # Click Clash
 
 A basic example of a websockets app, which simply tracks the number of times
-users click a button, and displays the live click counts to all visitors
+users click a button, and displays the live click counts to all visitors.
 
 ## Installation
 

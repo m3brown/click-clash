@@ -22,7 +22,7 @@ if os.environ.get('DEBUG') == 'False':
     DEBUG = False
 else:
     DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["clashofclicks.herokuapp.com", "localhost"]
 
 # Application definition
 INSTALLED_APPS = [
