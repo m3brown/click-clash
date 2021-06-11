@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 
 class Counter(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     count = models.IntegerField(default=0)
 
     def __str__(self):

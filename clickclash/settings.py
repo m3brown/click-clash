@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'game',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -106,6 +106,7 @@ else:
 AUTH_PASSWORD_VALIDATORS = []
 
 LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 
 # Internationalization
